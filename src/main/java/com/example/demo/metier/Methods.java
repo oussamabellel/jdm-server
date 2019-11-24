@@ -398,7 +398,7 @@ public class Methods {
 	public void saveInCache(String word, Mot mot, Gson gson) {
 		String json = gson.toJson(mot);
 
-		try (FileWriter file = new FileWriter("./cache/" + word + ".json")) {
+		try (FileWriter file = new FileWriter("./newcache/" + word + ".json")) {
 
 			file.write(json);
 			file.flush();
