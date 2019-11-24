@@ -10,7 +10,7 @@ import com.example.demo.entity.Mot;
 import com.example.demo.service.IService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+@CrossOrigin(origins = { "http://localhost:4200", "https://ui-jdm.herokuapp.com" }, allowedHeaders = "*")
 public class ServiceController {
 
 	@Autowired
