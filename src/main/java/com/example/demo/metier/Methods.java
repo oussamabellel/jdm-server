@@ -282,6 +282,7 @@ public class Methods {
 		Gson gson = new Gson();
 		File f = new File(".//cache//" + word + ".json");
 		if (f.exists()) {
+			System.out.println("get from cache");
 
 			JsonReader reader;
 			try {
@@ -401,6 +402,7 @@ public class Methods {
 
 			file.write(json);
 			file.flush();
+			System.out.println("file in cache ok");
 
 		} catch (IOException e) {
 			e.printStackTrace();
