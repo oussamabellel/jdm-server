@@ -280,12 +280,12 @@ public class Methods {
 
 		Mot mot = null;
 		Gson gson = new Gson();
-		File f = new File("./cache/" + word + ".json");
+		File f = new File("./newcache/" + word + ".json");
 		if (f.exists()) {
 
 			JsonReader reader;
 			try {
-				reader = new JsonReader(new FileReader("./cache/" + word + ".json"));
+				reader = new JsonReader(new FileReader("./newcache/" + word + ".json"));
 //				String content = new String(Files.readAllBytes(Paths.get(".//cache//"+word+".json")), "UTF-8");
 				mot = gson.fromJson(reader, Mot.class);
 				System.out.println("result from cache");
