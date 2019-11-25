@@ -280,15 +280,15 @@ public class Methods {
 
 		Mot mot = null;
 		Gson gson = new Gson();
-		File f = new File(".//cache//" + word + ".json");
+		File f = new File("./cache/" + word + ".json");
 		if (f.exists()) {
-			System.out.println("get from cache");
 
 			JsonReader reader;
 			try {
-				reader = new JsonReader(new FileReader(".//cache//" + word + ".json"));
+				reader = new JsonReader(new FileReader("./cache/" + word + ".json"));
 //				String content = new String(Files.readAllBytes(Paths.get(".//cache//"+word+".json")), "UTF-8");
 				mot = gson.fromJson(reader, Mot.class);
+				System.out.println("result from cache");
 //				if (relation == null) {
 //
 //					mot = gson.fromJson(reader, Mot.class);
@@ -402,7 +402,7 @@ public class Methods {
 
 			file.write(json);
 			file.flush();
-			System.out.println("file in cache ok");
+			System.out.println("saved cache");
 
 		} catch (IOException e) {
 			e.printStackTrace();
