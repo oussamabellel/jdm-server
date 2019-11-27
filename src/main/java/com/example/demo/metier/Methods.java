@@ -68,26 +68,30 @@ public class Methods {
 	public ArrayList<Noeud> getNoeuds(String data, String noeudtypes) {
 
 		ArrayList<Noeud> liste = new ArrayList<Noeud>();
-		// ArrayList<NoeudType> liste_noeudtype = getNoeudType(noeudtypes);
-
 		String[] test = data.split("\n");
 		String[] myArray = Arrays.copyOfRange(test, 2, test.length);
 		int integer;
+		String nameToSend;
 
 		for (String edge : myArray) {
 			String elements[] = edge.split(";");
-
+			
+			if (elements.length > 5)
+			{
+				nameToSend = elements[5];
+			} else {
+				
+				nameToSend = elements[2].substring(1, elements[2].length() - 1);
+			}
+			
 			if (!isNumeric(elements[4])) {
 				integer = 0;
 			} else {
 				Scanner in = new Scanner(elements[4]).useDelimiter("[^0-9]+");
 				integer = in.nextInt();
 			}
-
-//			liste.add(new Noeud(Integer.parseInt(elements[1]), elements[2].substring(1, elements[2].length() - 1),
-//					getNoeudTypeInformation(Integer.parseInt(elements[3]), liste_noeudtype),
-//					Integer.parseInt(elements[4]), ""));
-			liste.add(new Noeud(Integer.parseInt(elements[1]), elements[2].substring(1, elements[2].length() - 1),
+			
+			liste.add(new Noeud(Integer.parseInt(elements[1]),nameToSend ,
 					integer));
 		}
 
@@ -185,20 +189,10 @@ public class Methods {
 
 	public ArrayList<String> getDefinition(String[] data) {
 
-//		for (String s : data) {
-//			System.out.println("1	" + s);
-//		}
-
 		ArrayList<String> definitions = new ArrayList<String>();
 		String[] yourArray = Arrays.copyOfRange(data, 1, data.length);
-		// System.out.println(yourArray[0]);
 		for (String string : yourArray) {
 
-			// System.out.println(string.substring(3, string.length()).trim());
-			// System.out.println(string.replaceAll("[1-100]. \\s", "").trim());
-			// definitions.add(string.replaceAll("[0-9]+.", "").trim());
-			// System.out.println(string.substring(3,
-			// string.length()).trim().replaceAll("<br />", ". "));
 			definitions.add(string.substring(3, string.length()).trim().replaceAll("<br />", ""));
 
 		}
@@ -239,37 +233,6 @@ public class Methods {
 
 		}
 
-//		ArrayList<Relation> liste1 = new ArrayList<Relation>();
-//		ArrayList<Relation> liste2 = new ArrayList<Relation>();
-
-//		ArrayList<Relation> relationsEntrantes = mot.getRelationEntrantes();
-//		ArrayList<Relation> relationsSortantes = mot.getRelationSortantes();
-//
-//		for (Relation relout : relationsSortantes) {
-//			if (relout.getType() == null) {
-//				continue;
-//			} else if (relout.getType().getId() == Integer.parseInt(relation)) {
-//				liste2.add(relout);
-//			}
-//		}
-//
-//		for (Relation relin : relationsEntrantes) {
-//			if (relin.getType() == null) {
-//				continue;
-//			}
-//			if (relin.getType().getId() == Integer.parseInt(relation)) {
-//				liste1.add(relin);
-//			}
-//		}
-
-//		mapEntantres = liste1.stream().filter(p -> p.getType() != null)
-//				.sorted(Comparator.comparing(Relation::getPoids).reversed())
-//				.collect(Collectors.groupingBy(ch -> ch.type.name));
-//
-//		mapEntantres = liste2.stream().filter(p -> p.getType() != null)
-//				.sorted(Comparator.comparing(Relation::getPoids).reversed())
-//				.collect(Collectors.groupingBy(ch -> ch.type.name));
-
 		Mot res = new Mot(mot.getId(), mot.getNom(), mot.getType(), mot.getPoids(), mot.getMotFormate(),
 				mot.getDefinition(), mapEntantres, mapSortantes);
 		return res;
@@ -286,21 +249,8 @@ public class Methods {
 			JsonReader reader;
 			try {
 				reader = new JsonReader(new FileReader("./newcache/" + word + ".txt"));
-//				String content = new String(Files.readAllBytes(Paths.get(".//cache//"+word+".json")), "UTF-8");
 				mot = gson.fromJson(reader, Mot.class);
-				System.out.println("result from cache");
-//				if (relation == null) {
-//
-//					mot = gson.fromJson(reader, Mot.class);
-//
-//				} else {
-//
-//					mot = gson.fromJson(reader, Mot.class);
-//					if (!relation.isEmpty()) {
-//						mot = FilterResult(mot, relation);
-//					}
-//
-//				}
+
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -326,7 +276,6 @@ public class Methods {
 				String[] splitx = split2[0].split("<def>");
 				if (splitx.length > 1) {
 					splitx2 = splitx[1].split("</def>");
-					// String[] splitx3 = splitx2[0].replaceAll("\\<.*?\\>", "").split("\n");
 					String[] splitx3 = splitx2[0].split("<br />\n");
 
 					if (splitx3.length > 2) {
@@ -341,9 +290,8 @@ public class Methods {
 				String relations_types = split3[3];
 				String relation_sortantes = split3[4];
 				String relation_entrante = split3[5];
-				// System.out.println(relations_types);
+				
 				ArrayList<RelationType> relationTypes = getRelationTypes(relations_types);
-
 				ArrayList<Noeud> Noeuds = getNoeuds(les_noeuds, noeud_types);
 
 				int idMot = Noeuds.get(0).getId();
@@ -351,17 +299,13 @@ public class Methods {
 				NoeudType noeudType = Noeuds.get(0).getType();
 				int poid = Noeuds.get(0).getPoids();
 				String formatted_name = Noeuds.get(0).getMotFormate();
-
 				relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
+				
 				if (relations_entrantes != null) {
-					// Collections.sort(relations_entrantes, Collections.reverseOrder());
 
 					mapEntantres = relations_entrantes.stream()
 							.sorted(Comparator.comparing(Relation::getPoids).reversed())
 							.collect(Collectors.groupingBy(ch -> ch.type.name));
-
-					// Collections.sort(relations_entrantes, (p1, p2) -> p2.getPoids() -
-					// p1.getPoids());
 
 				} else {
 					mapEntantres = null;
@@ -372,8 +316,7 @@ public class Methods {
 					mapSortantes = relations_sortantes.stream()
 							.sorted(Comparator.comparing(Relation::getPoids).reversed())
 							.collect(Collectors.groupingBy(ch -> ch.type.name));
-					// Collections.sort(relations_sortantes, (p1, p2) -> p2.getPoids() -
-					// p1.getPoids());
+				
 				} else {
 					mapSortantes = null;
 				}
