@@ -78,7 +78,7 @@ public class Methods {
 			
 			if (elements.length > 5)
 			{
-				nameToSend = elements[5];
+				nameToSend = elements[5].substring(1, elements[5].length() - 1);
 			} else {
 				
 				nameToSend = elements[2].substring(1, elements[2].length() - 1);
