@@ -75,24 +75,23 @@ public class Methods {
 
 		for (String edge : myArray) {
 			String elements[] = edge.split(";");
-			
-			if (elements.length > 5)
-			{
-				nameToSend = elements[5].substring(1, elements[5].length() - 1);
+			if (elements.length > 5) {
+				// nameToSend = elements[5].substring(1, elements[5].length() - 1);
+				nameToSend = elements[5].replace("'", "");
 			} else {
-				
-				nameToSend = elements[2].substring(1, elements[2].length() - 1);
+
+				nameToSend = elements[2].replace("'", "");
+				// nameToSend = elements[2].substring(1, elements[2].length() - 1);
 			}
-			
+
 			if (!isNumeric(elements[4])) {
 				integer = 0;
 			} else {
 				Scanner in = new Scanner(elements[4]).useDelimiter("[^0-9]+");
 				integer = in.nextInt();
 			}
-			
-			liste.add(new Noeud(Integer.parseInt(elements[1]),nameToSend ,
-					integer));
+
+			liste.add(new Noeud(Integer.parseInt(elements[1]), nameToSend, integer));
 		}
 
 		return liste;
@@ -290,7 +289,7 @@ public class Methods {
 				String relations_types = split3[3];
 				String relation_sortantes = split3[4];
 				String relation_entrante = split3[5];
-				
+
 				ArrayList<RelationType> relationTypes = getRelationTypes(relations_types);
 				ArrayList<Noeud> Noeuds = getNoeuds(les_noeuds, noeud_types);
 
@@ -300,7 +299,7 @@ public class Methods {
 				int poid = Noeuds.get(0).getPoids();
 				String formatted_name = Noeuds.get(0).getMotFormate();
 				relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
-				
+
 				if (relations_entrantes != null) {
 
 					mapEntantres = relations_entrantes.stream()
@@ -316,7 +315,7 @@ public class Methods {
 					mapSortantes = relations_sortantes.stream()
 							.sorted(Comparator.comparing(Relation::getPoids).reversed())
 							.collect(Collectors.groupingBy(ch -> ch.type.name));
-				
+
 				} else {
 					mapSortantes = null;
 				}
