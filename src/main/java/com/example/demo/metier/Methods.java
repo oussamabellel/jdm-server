@@ -231,11 +231,47 @@ public class Methods {
 			}
 
 		}
+		mot.setMapEntrantes(mapEntantres);
+		mot.setMapSortantes(mapSortantes);
 
-		Mot res = new Mot(mot.getId(), mot.getNom(), mot.getType(), mot.getPoids(), mot.getMotFormate(),
-				mot.getDefinition(), mapEntantres, mapSortantes);
-		return res;
+//		Mot res = new Mot(mot.getId(), mot.getNom(), mot.getType(), mot.getPoids(), mot.getMotFormate(),
+//				mot.getDefinition(), mapEntantres, mapSortantes);
+		return mot;
 
+	}
+	
+	public ArrayList<String> getRaffinement (Map<String, List<Relation>> map) throws Exception {
+		
+		ArrayList<String> raf_definitions = new ArrayList<String>();
+		
+		String raf = "r_raff_sem";
+		if (map.containsKey(raf)) {
+			List<Relation> relations = map.get(raf);
+			for (Relation r : relations) {
+				String mot = r.getNoeud().getNom();
+				String html = getHTML(mot);
+				
+				if (!html.contains("<CODE>")) {
+					continue;
+				}
+				String[] split = html.split("<CODE>");
+				String[] split2 = split[1].split("</CODE>");
+				String[] splitx = split2[0].split("<def>");
+				if (splitx.length > 1) {
+
+					String[] splitx2 = splitx[1].split("</def>");
+					String[] splitx3 = splitx2[0].split("<br />\n");
+
+					if (splitx3.length > 2) {
+						ArrayList<String> defs = getDefinition(splitx3);
+						raf_definitions.addAll(defs);
+					}
+				}
+
+				
+			}
+		}
+		return raf_definitions;
 	}
 
 	public Mot Parser(String word, String relation) {
@@ -257,6 +293,7 @@ public class Methods {
 
 		} else {
 
+			ArrayList<String> raf_definitions;
 			ArrayList<String> definiton = null;
 			ArrayList<Relation> relations_entrantes;
 			ArrayList<Relation> relations_sortantes;
@@ -268,7 +305,7 @@ public class Methods {
 			try {
 				html = getHTML(word);
 				if (!html.contains("<CODE>")) {
-					return new Mot(0, word, null, 0, null, null, null, null);
+					return new Mot(0, word, null, 0, null, null, null, null, null);
 				}
 				String[] split = html.split("<CODE>");
 				String[] split2 = split[1].split("</CODE>");
@@ -319,8 +356,9 @@ public class Methods {
 				} else {
 					mapSortantes = null;
 				}
-
-				mot = new Mot(idMot, nom, noeudType, poid, formatted_name, definiton, mapEntantres, mapSortantes);
+				
+				raf_definitions = getRaffinement(mapSortantes);
+				mot = new Mot(idMot, nom, noeudType, poid, formatted_name, definiton, mapEntantres, mapSortantes, raf_definitions);
 				saveInCache(word, mot, gson);
 
 			} catch (Exception e) {
