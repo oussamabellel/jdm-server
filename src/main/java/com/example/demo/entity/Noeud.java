@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Noeud {
 
-	protected int id;
-	protected String nom;
-	protected NoeudType type;
-	protected int poids;
-	protected String motFormate;
+	public int id;
+	public String nom;
+	public NoeudType type;
+	public int poids;
+	public String motFormate;
 
 	public Noeud(int id, String nom, NoeudType type, int poids, String motFormate) {
 		super();

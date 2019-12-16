@@ -239,18 +239,18 @@ public class Methods {
 		return mot;
 
 	}
-	
-	public ArrayList<String> getRaffinement (Map<String, List<Relation>> map) throws Exception {
-		
+
+	public ArrayList<String> getRaffinement(Map<String, List<Relation>> map) throws Exception {
+
 		ArrayList<String> raf_definitions = new ArrayList<String>();
-		
+
 		String raf = "r_raff_sem";
 		if (map.containsKey(raf)) {
 			List<Relation> relations = map.get(raf);
 			for (Relation r : relations) {
 				String mot = r.getNoeud().getNom();
 				String html = getHTML(mot);
-				
+
 				if (!html.contains("<CODE>")) {
 					continue;
 				}
@@ -268,7 +268,6 @@ public class Methods {
 					}
 				}
 
-				
 			}
 		}
 		return raf_definitions;
@@ -340,8 +339,12 @@ public class Methods {
 				if (relations_entrantes != null) {
 
 					mapEntantres = relations_entrantes.stream()
-							.sorted(Comparator.comparing(Relation::getPoids).reversed())
+							.sorted(Comparator.comparing(Relation::getPoids).reversed()
+									.thenComparing(rl -> rl.noeud.nom))
 							.collect(Collectors.groupingBy(ch -> ch.type.name));
+
+//					mapEntantres = relations_entrantes.stream().sorted(Comparator.comparing(ch -> ch.noeud.nom))
+//							.collect(Collectors.groupingBy(ch -> ch.type.name));
 
 				} else {
 					mapEntantres = null;
@@ -350,15 +353,17 @@ public class Methods {
 				relations_sortantes = getContentRelation(relation_sortantes, Noeuds, relationTypes, true);
 				if (relations_sortantes != null) {
 					mapSortantes = relations_sortantes.stream()
-							.sorted(Comparator.comparing(Relation::getPoids).reversed())
+							.sorted(Comparator.comparing(Relation::getPoids).reversed()
+									.thenComparing(rl -> rl.noeud.nom))
 							.collect(Collectors.groupingBy(ch -> ch.type.name));
 
 				} else {
 					mapSortantes = null;
 				}
-				
+
 				raf_definitions = getRaffinement(mapSortantes);
-				mot = new Mot(idMot, nom, noeudType, poid, formatted_name, definiton, mapEntantres, mapSortantes, raf_definitions);
+				mot = new Mot(idMot, nom, noeudType, poid, formatted_name, definiton, mapEntantres, mapSortantes,
+						raf_definitions);
 				saveInCache(word, mot, gson);
 
 			} catch (Exception e) {
