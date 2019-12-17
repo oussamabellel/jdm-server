@@ -45,6 +45,25 @@ public class Methods {
 		rd.close();
 		return result.toString();
 	}
+	
+	public String getHTMLSpecific(String mot) throws Exception {
+
+		String uncoded = URLEncoder.encode(mot, "ISO-8859-1");
+ 		String lien = "http://www.jeuxdemots.org/rezo-dump.php?gotermsubmit=Chercher&gotermrel=" + uncoded + "&rel=&relout=norelout";
+		StringBuilder result = new StringBuilder();
+		URL url = new URL(lien);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "ISO-8859-1"));
+		String line;
+		while ((line = rd.readLine()) != null) {
+			result.append(line + "\n");
+		}
+		rd.close();
+		return result.toString();
+	}
+	
+	
 
 	public ArrayList<NoeudType> getNoeudType(String data) {
 
@@ -234,8 +253,6 @@ public class Methods {
 		mot.setMapEntrantes(mapEntantres);
 		mot.setMapSortantes(mapSortantes);
 
-//		Mot res = new Mot(mot.getId(), mot.getNom(), mot.getType(), mot.getPoids(), mot.getMotFormate(),
-//				mot.getDefinition(), mapEntantres, mapSortantes);
 		return mot;
 
 	}
@@ -271,6 +288,33 @@ public class Methods {
 			}
 		}
 		return raf_definitions;
+	}
+	
+	public Map<String, List<Relation>> TryGetRelations(String mot) throws Exception {
+		String html = getHTMLSpecific(mot);
+		String[] split = html.split("<CODE>");
+		String[] split2 = split[1].split("</CODE>");
+		String[] splitx = split2[0].split("<def>");
+		
+		String[] splitx2 = null;
+		if (splitx.length > 1) {
+			splitx2 = splitx[1].split("</def>");
+
+		}
+		String[] split3 = splitx2[1].split("\n//");
+		String relations_types = split3[3];
+		String relation_entrante = split3[4];
+		String les_noeuds = split3[2];
+		String noeud_types = split3[1];
+
+		ArrayList<RelationType> relationTypes = getRelationTypes(relations_types);
+		ArrayList<Noeud> Noeuds = getNoeuds(les_noeuds, noeud_types);
+		
+		ArrayList<Relation> relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
+		if (relations_entrantes != null) {
+			return SortRelations(relations_entrantes);
+		} 
+		return null;
 	}
 
 	public Mot Parser(String word, String relation) {
@@ -337,27 +381,18 @@ public class Methods {
 				relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
 
 				if (relations_entrantes != null) {
-
-					mapEntantres = relations_entrantes.stream()
-							.sorted(Comparator.comparing(Relation::getPoids).reversed()
-									.thenComparing(rl -> rl.noeud.nom))
-							.collect(Collectors.groupingBy(ch -> ch.type.name));
-
-//					mapEntantres = relations_entrantes.stream().sorted(Comparator.comparing(ch -> ch.noeud.nom))
-//							.collect(Collectors.groupingBy(ch -> ch.type.name));
+					mapEntantres = SortRelations(relations_entrantes);
 
 				} else {
-					mapEntantres = null;
+					mapEntantres = TryGetRelations(word);
 				}
 
 				relations_sortantes = getContentRelation(relation_sortantes, Noeuds, relationTypes, true);
 				if (relations_sortantes != null) {
-					mapSortantes = relations_sortantes.stream()
-							.sorted(Comparator.comparing(Relation::getPoids).reversed()
-									.thenComparing(rl -> rl.noeud.nom))
-							.collect(Collectors.groupingBy(ch -> ch.type.name));
+					mapSortantes = SortRelations(relations_sortantes);
 
 				} else {
+					
 					mapSortantes = null;
 				}
 
@@ -378,6 +413,13 @@ public class Methods {
 
 		return mot;
 
+	}
+
+	private Map<String, List<Relation>> SortRelations(ArrayList<Relation> relations_entrantes) {
+		return relations_entrantes.stream()
+				.sorted(Comparator.comparing(Relation::getPoids).reversed()
+						.thenComparing(rl -> rl.noeud.nom))
+				.collect(Collectors.groupingBy(ch -> ch.type.name));
 	}
 
 	public void saveInCache(String word, Mot mot, Gson gson) {
