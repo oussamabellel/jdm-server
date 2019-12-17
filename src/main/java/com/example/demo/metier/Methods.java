@@ -291,29 +291,29 @@ public class Methods {
 	}
 	
 	public Map<String, List<Relation>> TryGetRelations(String mot) throws Exception {
+		System.out.println("trying to find relations");
 		String html = getHTMLSpecific(mot);
 		String[] split = html.split("<CODE>");
 		String[] split2 = split[1].split("</CODE>");
 		String[] splitx = split2[0].split("<def>");
 		
-		String[] splitx2 = null;
-		if (splitx.length > 1) {
-			splitx2 = splitx[1].split("</def>");
+		if (splitx != null) {
+			String[] splitx2 = splitx[1].split("</def>");
+			String[] split3 = splitx2[1].split("\n//");
+			String relations_types = split3[3];
+			String relation_entrante = split3[4];
+			String les_noeuds = split3[2];
+			String noeud_types = split3[1];
 
+			ArrayList<RelationType> relationTypes = getRelationTypes(relations_types);
+			ArrayList<Noeud> Noeuds = getNoeuds(les_noeuds, noeud_types);
+			
+			ArrayList<Relation> relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
+			if (relations_entrantes != null) {
+				return SortRelations(relations_entrantes);
+			} 
 		}
-		String[] split3 = splitx2[1].split("\n//");
-		String relations_types = split3[3];
-		String relation_entrante = split3[4];
-		String les_noeuds = split3[2];
-		String noeud_types = split3[1];
-
-		ArrayList<RelationType> relationTypes = getRelationTypes(relations_types);
-		ArrayList<Noeud> Noeuds = getNoeuds(les_noeuds, noeud_types);
 		
-		ArrayList<Relation> relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
-		if (relations_entrantes != null) {
-			return SortRelations(relations_entrantes);
-		} 
 		return null;
 	}
 
