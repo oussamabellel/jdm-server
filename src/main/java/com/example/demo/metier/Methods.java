@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -416,10 +417,27 @@ public class Methods {
 	}
 
 	private Map<String, List<Relation>> SortRelations(ArrayList<Relation> relations_entrantes) {
+		
+		RemoveUnders(relations_entrantes);
+		
 		return relations_entrantes.stream()
 				.sorted(Comparator.comparing(Relation::getPoids).reversed()
 						.thenComparing(rl -> rl.noeud.nom))
 				.collect(Collectors.groupingBy(ch -> ch.type.name));
+	}
+
+	private void RemoveUnders(ArrayList<Relation> relations_entrantes) {
+		Iterator<Relation> it = relations_entrantes.iterator();
+
+		while (it.hasNext())
+		{
+			Relation e = it.next();
+			
+			if (e.getNoeud().getNom().startsWith("_"))
+			{
+				it.remove();
+			}
+		}
 	}
 
 	public void saveInCache(String word, Mot mot, Gson gson) {
