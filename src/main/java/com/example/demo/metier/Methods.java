@@ -252,7 +252,7 @@ public class Methods {
 		String[] yourArray = Arrays.copyOfRange(data, 1, data.length);
 		for (String string : yourArray) {
 
-			String def = string.replaceAll("<br /> +[0-9]", "").replace("<br />", ".");
+			String def = string.replaceAll("<br /> +[0-9]", "").replace("<br />", "");
 			if (Character.isDigit(def.charAt(0))) {
 				def = def.substring(3, def.length());
 			}
