@@ -12,27 +12,22 @@ public class Mot extends Noeud {
 	ArrayList<String> rafDefinitions;
 
 	public Mot(int id, String nom, NoeudType type, int poids, String motFormate, ArrayList<String> definition,
-			Map<String, List<Relation>> mapEntrantes, Map<String, List<Relation>> mapSortantes,ArrayList<String> rafDefinitions) {
+			Map<String, List<Relation>> mapEntrantes, Map<String, List<Relation>> mapSortantes,
+			ArrayList<String> rafDefinitions) {
 		super(id, nom, type, poids, motFormate);
 		this.definition = definition;
 		this.mapEntrantes = mapEntrantes;
 		this.mapSortantes = mapSortantes;
-		this.rafDefinitions=rafDefinitions;
+		this.rafDefinitions = rafDefinitions;
 	}
-	
-	
 
 	public ArrayList<String> getRafDefinitions() {
 		return rafDefinitions;
 	}
 
-
-
 	public void setRafDefinitions(ArrayList<String> rafDefinitions) {
 		this.rafDefinitions = rafDefinitions;
 	}
-
-
 
 	public Map<String, List<Relation>> getMapEntrantes() {
 		return mapEntrantes;

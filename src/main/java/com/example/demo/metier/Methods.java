@@ -176,7 +176,7 @@ public class Methods {
 				for (String yourString : yourArray) {
 
 					String elements[] = yourString.split(";");
-					Scanner in = new Scanner(elements[5]).useDelimiter("[^0-9]+");
+					Scanner in = new Scanner(elements[5]).useDelimiter("(?>[^-0-9]+|-(?![0-9]))+|(?=-[0-9])");
 					int integer = in.nextInt();
 					Noeud nd = getNoeudInformation(Integer.parseInt(elements[3]), noeuds);
 					RelationType rt = getRelationTypeInformation(Integer.parseInt(elements[4]), liste);
@@ -193,7 +193,7 @@ public class Methods {
 				for (String yourString : yourArray) {
 
 					String elements[] = yourString.split(";");
-					Scanner in = new Scanner(elements[5]).useDelimiter("[^0-9]+");
+					Scanner in = new Scanner(elements[5]).useDelimiter("(?>[^-0-9]+|-(?![0-9]))+|(?=-[0-9])");
 					int integer = in.nextInt();
 					Noeud nd = getNoeudInformation(Integer.parseInt(elements[2]), noeuds);
 					RelationType rt = getRelationTypeInformation(Integer.parseInt(elements[4]), liste);
@@ -368,7 +368,7 @@ public class Methods {
 
 		Mot mot = null;
 		Gson gson = new Gson();
-		File f = new File("./newcache/" + word + ".txt");
+		File f = new File("./newcache/" + word + ".stxt");
 		if (f.exists()) {
 
 			JsonReader reader;
