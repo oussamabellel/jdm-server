@@ -368,7 +368,7 @@ public class Methods {
 
 		Mot mot = null;
 		Gson gson = new Gson();
-		File f = new File("./newcache/" + word + ".stxt");
+		File f = new File("./newcache/" + word + ".txt");
 		if (f.exists()) {
 
 			JsonReader reader;
