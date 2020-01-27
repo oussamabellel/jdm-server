@@ -32,6 +32,7 @@ public class Methods {
 
 	public final ArrayList<Integer> relationsToIgnore = new ArrayList<Integer>() {
 		{
+			add(4);
 			add(12);
 			add(18);
 			add(19);
@@ -169,44 +170,47 @@ public class Methods {
 		if (split[0].equals(" END")) {
 			liste_relation = null;
 		} else {
-			String[] yourArray = Arrays.copyOfRange(split, 2, split.length);
 
-			if (is_out) {
+			if (split.length > 2) {
+				String[] yourArray = Arrays.copyOfRange(split, 2, split.length);
+				if (is_out) {
 
-				for (String yourString : yourArray) {
+					for (String yourString : yourArray) {
 
-					String elements[] = yourString.split(";");
-					Scanner in = new Scanner(elements[5]).useDelimiter("(?>[^-0-9]+|-(?![0-9]))+|(?=-[0-9])");
-					int integer = in.nextInt();
-					Noeud nd = getNoeudInformation(Integer.parseInt(elements[3]), noeuds);
-					RelationType rt = getRelationTypeInformation(Integer.parseInt(elements[4]), liste);
-					if (nd != null && rt != null) {
-						liste_relation.add(new Relation(Integer.parseInt(elements[1]), nd, rt, integer));
-					} else {
-						continue;
+						String elements[] = yourString.split(";");
+						Scanner in = new Scanner(elements[5]).useDelimiter("(?>[^-0-9]+|-(?![0-9]))+|(?=-[0-9])");
+						int integer = in.nextInt();
+						Noeud nd = getNoeudInformation(Integer.parseInt(elements[3]), noeuds);
+						RelationType rt = getRelationTypeInformation(Integer.parseInt(elements[4]), liste);
+						if (nd != null && rt != null) {
+							liste_relation.add(new Relation(Integer.parseInt(elements[1]), nd, rt, integer));
+						} else {
+							continue;
+						}
+
+					}
+
+				} else {
+
+					for (String yourString : yourArray) {
+
+						String elements[] = yourString.split(";");
+						Scanner in = new Scanner(elements[5]).useDelimiter("(?>[^-0-9]+|-(?![0-9]))+|(?=-[0-9])");
+						int integer = in.nextInt();
+						Noeud nd = getNoeudInformation(Integer.parseInt(elements[2]), noeuds);
+						RelationType rt = getRelationTypeInformation(Integer.parseInt(elements[4]), liste);
+
+						if (nd != null && rt != null) {
+							liste_relation.add(new Relation(Integer.parseInt(elements[1]), nd, rt, integer));
+						} else {
+							continue;
+						}
+
 					}
 
 				}
-
-			} else {
-
-				for (String yourString : yourArray) {
-
-					String elements[] = yourString.split(";");
-					Scanner in = new Scanner(elements[5]).useDelimiter("(?>[^-0-9]+|-(?![0-9]))+|(?=-[0-9])");
-					int integer = in.nextInt();
-					Noeud nd = getNoeudInformation(Integer.parseInt(elements[2]), noeuds);
-					RelationType rt = getRelationTypeInformation(Integer.parseInt(elements[4]), liste);
-
-					if (nd != null && rt != null) {
-						liste_relation.add(new Relation(Integer.parseInt(elements[1]), nd, rt, integer));
-					} else {
-						continue;
-					}
-
-				}
-
 			}
+
 		}
 		return liste_relation;
 
@@ -424,6 +428,7 @@ public class Methods {
 				NoeudType noeudType = Noeuds.get(0).getType();
 				int poid = Noeuds.get(0).getPoids();
 				String formatted_name = Noeuds.get(0).getMotFormate();
+
 				relations_entrantes = getContentRelation(relation_entrante, Noeuds, relationTypes, false);
 
 				if (relations_entrantes != null) {
